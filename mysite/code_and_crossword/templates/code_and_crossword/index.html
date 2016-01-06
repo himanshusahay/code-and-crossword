@@ -1,0 +1,19 @@
+Hello World. You're at the code-and-crossword index. Pick a timed challenge - 30 min / 60 min / 90 min
+
+{% if code_questions %}
+    <ul>
+    <li>{{ code_count }} coding challenges are available</li>
+    </ul>
+{% endif %}
+
+{% if crossword_questions %}
+    <ul>
+    <li>{{ crossword_count }} crossword puzzles are available</li>
+    </ul>
+{% endif %}
+
+{% if not code_questions and not crossword_questions %}
+    <p>No challenges are available.</p>
+{% endif %}
+
+Access a coding question <a href="{% url 'code_and_crossword:code' 1 %}">here</a>.

@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django import forms
 
 # Create your models here.
 
@@ -18,9 +19,8 @@ class Code(models.Model):
 	def __str__(self):
 		return self.question + ". level = " + str(self.level)
 
-class Code_Answer(models.Model):
-	question = models.ForeignKey(Code, on_delete=models.CASCADE)
-	answer = models.CharField(max_length = 1000)
+class Code_Answer(forms.Form):
+	answer = forms.CharField(max_length = 1000)
 
 class Crossword(models.Model):
 	question = models.CharField(max_length = 3000)
@@ -29,6 +29,5 @@ class Crossword(models.Model):
 	def __str__(self):
 		return self.question + ". level = " + str(self.level)
 
-class Crossword_Answer(models.Model):
-	question = models.ForeignKey(Code, on_delete=models.CASCADE)
-	answer = models.CharField(max_length = 3000)
+class Crossword_Answer(forms.Form):
+	answer = forms.CharField(max_length = 3000)

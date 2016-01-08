@@ -1,2 +1,12 @@
-You're on the code question in level {{ question.level }}.<br>
-Question: {{ question.question }}
+<h1> You're on the code question in level {{ question.level }}.<br>
+Question: {{ question.question }}</h1>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<!-- input form for uploading code -->
+<form action="{% url 'code_and_crossword:code_answer' question.level %}" method="POST">
+	{% csrf_token %}
+    <input type="text" name="answer" id="submission {{ question.level }}" value="#Use any language. Must define another check for language type here later" />
+     <!-- <label for="answer">Code goes here:</label> --><br/>
+	<input type="submit" value="Run" />
+</form>

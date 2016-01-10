@@ -1,4 +1,4 @@
-Hello World. You're at the code-and-crossword index. Pick a timed challenge - 30 min / 60 min / 90 min
+You're at the code-and-crossword index.
 
 {% if code_questions %}
     <ul>
@@ -16,4 +16,11 @@ Hello World. You're at the code-and-crossword index. Pick a timed challenge - 30
     <p>No challenges are available.</p>
 {% endif %}
 
-Access a coding question <a href="{% url 'code_and_crossword:code' 1 %}">here</a>.
+Pick a timed challenge
+<form action="{% url 'code_and_crossword:code' 1 %}" method="post">
+{% csrf_token %}
+    <input type="radio" name="challenge_choice_1" id="30" value="first_radio" /><label for="challenge_choice_1">30 min</label><br />
+    <input type="radio" name="challenge_choice_2" id="60" value="second_radio" /><label for="challenge_choice_2">60 min</label><br />
+    <input type="radio" name="challenge_choice_3" id="90" value="third_radio" /><label for="challenge_choice_3">90 min</label><br />
+<input type="submit" value="Enter Challenge" />
+</form>

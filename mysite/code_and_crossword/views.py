@@ -2,9 +2,16 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 # from .forms import UploadFileForm
 # from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.urlresolvers import reverse
 from .models import Code, Crossword, Code_Answer, Crossword_Answer
 
 # Create your views here.
+
+'''
+POINTS TO CONSIDER:
+When and how to increment level.
+How to save user data at the end of the level.
+'''
 
 def index(request):
 	code_questions = Code.objects.all()
@@ -36,52 +43,59 @@ def crossword(request, level):
 
 	return render(request, 'code_and_crossword/crossword.html', {'question': question})
 
-def code_answer(request, level):
-	# if request.method == 'POST'
-	if request.method == 'POST':
+def verify_answer(answer):
+	if answer == "yes":
+		return True
+	return False
 
-		try: 
-			answer = Code_Answer(request.POST['answer'])
-			if answer.is_valid():
+def code_check(request, level):
 
-				# Always return an HttpResponseRedirect after successfully dealing
-			    # with POST data. This prevents data from being posted twice if a
-			    # user hits the Back button.
-			    print request
-			    return HttpResponseRedirect(reverse('code_and_crossword/code.html', args=(level)))
-			    # return render(request, 'code_and_crossword/success.html', { 'question': Code.objects.get(level=level) })
-		except Code.DoesNotExist:
-			raise Http404("Coding challenge does not exist.")
+	# after getting post data, the form checks if all good and redirects to success page. Else, it renders again with an error
 
-	## !! WORKING HERE: must change the page once the form is handled
+	answer = request.POST['answer']
+	if verify_answer(answer) is True:
+
+		# Always return an HttpResponseRedirect after successfully dealing
+	    # with POST data. This prevents data from being posted twice if a
+	    # user hits the Back button.
+	# increment level
+		success_type = 'code'
+		return HttpResponseRedirect(reverse('code_and_crossword:success', args=(level, success_type)))
 
 	else:
-		# Redisplay the question
-		answer = Code_Answer()
-		# context = { 'question': Code.objects.get(level = level), 'error_message': "error occured" }
-		# return render(request, 'code_and_crossword/code.html', context)
-		return HttpResponseRedirect(reverse('code_and_crossword/code.html', args=(level)))
+		# answer is invalid
+		return render(request, 'code_and_crossword/code.html', { 'question': Code.objects.get(level=level), 'error_message': 'Your answer is invalid.' })
 
+def crossword_check(request, level):
+
+	# after getting post data, the form checks if all good and redirects to success page. Else, it renders again with an error
+
+	answer = request.POST['answer']
+	if verify_answer(answer) is True:
+
+		# Always return an HttpResponseRedirect after successfully dealing
+	    # with POST data. This prevents data from being posted twice if a
+	    # user hits the Back button.
+	# increment level
+		success_type = 'crossword'
+		return HttpResponseRedirect(reverse('code_and_crossword:success', args=(level, success_type)))
+
+	else:
+		# answer is invalid
+		return render(request, 'code_and_crossword/crossword.html', { 'question': Crossword.objects.get(level=level), 'error_message': 'Your answer is invalid.' })
+
+def success(request, level, success_type):
+	if success_type == 'code':
+		question = Code.objects.get(level=level)
+	elif success_type == 'crossword':
+		question = Crossword.objects.get(level=level)
+	return render(request, 'code_and_crossword/success.html', {'question': question, 'success_type': success_type})
 
 # def handle_uploaded_file(f):
 #     with open('some/file/name.txt', 'rb+') as destination:
 #         for chunk in f.chunks():
 #             destination.read(chunk)
-
-# def code_answer(request, level):
-#     if request.method == 'POST':
-#         form = UploadFileForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             handle_uploaded_file(request.FILES['file'])
-#             return HttpResponseRedirect('/code_and_crossword/')
-# could be an error message here too
-#     else:
-#         form = UploadFileForm()
-# 	    # return render(request, 'upload.html', {'form': form})
-# 		# else:
-# 		return render_to_response('/code_and_crossword/code.html', {'question': Code.objects.get(level=level), 'error_message':"Fail"})
-
-		# return HttpResponseRedirect('/code_and_crossword/')
 	
 def leaderboard(request):
-	return HttpResponse("These people attempted the challenges: ")
+
+	return render(request, 'code_and_crossword/leaderboard.html', {})

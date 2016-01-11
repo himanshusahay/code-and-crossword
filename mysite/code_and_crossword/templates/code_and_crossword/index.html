@@ -16,7 +16,7 @@ You're at the code-and-crossword index.
     <p>No challenges are available.</p>
 {% endif %}
 
-Pick a timed challenge
+Pick a timed challenge:
 <form action="{% url 'code_and_crossword:code' 1 %}" method="post">
 {% csrf_token %}
     <input type="radio" name="challenge_choice_1" id="30" value="first_radio" /><label for="challenge_choice_1">30 min</label><br />
